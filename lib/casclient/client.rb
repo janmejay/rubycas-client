@@ -18,7 +18,7 @@ module CASClient
       @login_url    = conf[:login_url]
       @logout_url   = conf[:logout_url]
       @validate_url = conf[:validate_url]
-      @validate_tgt_url = conf[:validate_tgt_url]
+      @validate_session_url = conf[:validate_session_url]
       @proxy_url    = conf[:proxy_url]
       @service_url  = conf[:service_url]
       @proxy_callback_url  = conf[:proxy_callback_url]
@@ -39,8 +39,8 @@ module CASClient
       @validate_url || (cas_base_url + "/proxyValidate")
     end
 
-    def validate_tgt_url
-      @validate_tgt_url || (cas_base_url + "/tgtValidate")
+    def validate_session_url
+      @validate_session_url || (cas_base_url + "/sessionValidate")
     end
 
     # Returns the CAS server's logout url.
@@ -155,11 +155,11 @@ module CASClient
 
     #This is the function client service's controller should use
     # to mimic validate on every request from backend
-    def validate_tgt(tgt, username)
-      uri = URI.parse(validate_tgt_url)
+    def validate_cas_session(username)
+      uri = URI.parse(validate_session_url)
       https = Net::HTTP.new(uri.host, uri.port)
       https.use_ssl = (uri.scheme == 'https')
-      res = https.get(uri.path + "?tgt=#{tgt}", ';')
+      res = https.get(uri.path + "?user=#{CGI.escape(username)}", ';')
       res.body.strip == "yes\n#{username}\n"
     end
 
