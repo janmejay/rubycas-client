@@ -2,3 +2,5 @@
 pkg
 doc
 *.swp
+.emacs_project
+TAGS
