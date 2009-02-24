@@ -159,8 +159,8 @@ module CASClient
       uri = URI.parse(validate_session_url)
       https = Net::HTTP.new(uri.host, uri.port)
       https.use_ssl = (uri.scheme == 'https')
-      res = https.get(uri.path + "?user=#{CGI.escape(username)}", ';')
-      res.body.strip == "yes\n#{username}\n"
+      res = https.get(uri.path + "?user=#{CGI.escape(username)}")
+      res.body =~ /^yes/
     end
 
     # Requests a proxy ticket from the CAS server for the given service
